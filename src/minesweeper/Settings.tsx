@@ -1,23 +1,22 @@
 import { FormEvent } from "react";
+import { useDispatch } from 'react-redux';
 import styled from "styled-components";
+import { startGame } from "./slice";
 
-interface GameSettingsProps {
-  onGameStart: (width: number, height: number, maximumMines: number) => void;
-}
+export function Settings() {
+  const dispatch = useDispatch();
 
-export function Settings({ onGameStart }: GameSettingsProps) {
   // note: Keeping it simple and using uncontrolled components, I would normally formik or react-hook-form
   function handleSubmit(e: FormEvent<HTMLFormElement>) {
     e.preventDefault();
-    const width = e.currentTarget[0] as HTMLInputElement;
-    const height = e.currentTarget[1] as HTMLInputElement;
-    const maximumMines = e.currentTarget[2] as HTMLInputElement;
+    const widthInput = e.currentTarget[0] as HTMLInputElement;
+    const heightInput = e.currentTarget[1] as HTMLInputElement;
+    const maximumMinesInput = e.currentTarget[2] as HTMLInputElement;
 
-    onGameStart(
-      parseInt(width.value),
-      parseInt(height.value),
-      parseInt(maximumMines.value)
-    );
+    const width = parseInt(widthInput.value);
+    const height = parseInt(heightInput.value);
+    const maximumMines = parseInt(maximumMinesInput.value);
+    dispatch(startGame({ width, height, maximumMines }));
   }
 
   return (

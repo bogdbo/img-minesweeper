@@ -1,14 +1,20 @@
 import { MouseEventHandler, useCallback } from "react";
+import { useDispatch, useSelector } from 'react-redux';
 import styled from "styled-components";
+import { RootStore } from '../rootStore';
 import { getCellHoverStyle, getCellTextColor } from './utilities';
-import { Cell } from "./types";
+import { clickCell } from "./slice";
 
 export interface MinesweeperCellProps {
-  cell: Cell;
-  onClick: (isFlagging: boolean) => void;
+  x: number;
+  y: number;
 }
 
-export function MinesweeperCell({ cell, onClick }: MinesweeperCellProps) {
+export function MinesweeperCell({ x, y }: MinesweeperCellProps) {
+  const dispatch = useDispatch();
+  const board = useSelector((state: RootStore) => state.minesweeper.board);
+  const cell = board[x][y];
+
   let content = null;
   if (cell.isDiscovered) {
     if (cell.isMine) {
@@ -25,9 +31,9 @@ export function MinesweeperCell({ cell, onClick }: MinesweeperCellProps) {
       e.preventDefault();
       // any button other than normal click will flag the cell
       const isFlagging = e.button !== 0;
-      onClick(isFlagging);
+      dispatch(clickCell({ isFlag: isFlagging, x, y }))
     },
-    [onClick]
+    [dispatch]
   );
 
   return (

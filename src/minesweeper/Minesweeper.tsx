@@ -1,38 +1,28 @@
-import { useCallback, useMemo } from "react";
+import { useMemo } from "react";
+import { useSelector } from 'react-redux';
 import styled from "styled-components";
+import { RootStore } from '../rootStore';
 import { Settings } from "./Settings";
 import { StatusDisplay } from "./StatusDisplay";
 import { MinesweeperCell } from "./Cell";
-import { useMinesweeper } from "./hooks";
 
 export function Minesweeper() {
-  const { board, status, newGame, clickCell, width, height } = useMinesweeper();
+  const { board, width, height } = useSelector((state: RootStore) => state.minesweeper);
   const cellComponents = useMemo(
     () =>
       board.flatMap((row, x) =>
         row.map((cell, y) => (
-          <MinesweeperCell
-            onClick={(isFlagging) => clickCell(x, y, isFlagging)}
-            key={`${x}-${y}`}
-            cell={cell}
-          />
+          <MinesweeperCell x={x} y={y} key={`${x}-${y}`} />
         ))
       ),
     [board]
   );
 
-  const handleGameStart = useCallback(
-    (width: number, height: number, maximumMines: number) => {
-      newGame(width, height, maximumMines);
-    },
-    [newGame]
-  );
-
   return (
     <MinesweeperHost>
       <ControlPanel>
-        <Settings onGameStart={handleGameStart} />
-        <StatusDisplay status={status} />
+        <Settings />
+        <StatusDisplay />
       </ControlPanel>
       <Board width={width} height={height}>
         {cellComponents}

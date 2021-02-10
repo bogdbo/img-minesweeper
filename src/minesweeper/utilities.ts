@@ -1,6 +1,6 @@
-import { GameBoard, GameStatus } from './types';
+import { GameBoard, InitBoardPayload } from './types';
 
-export function initBoard(width: number, height: number, maxMines: number) {
+export function initBoard({ width, height, maximumMines } : InitBoardPayload) {
   // create empty board
   const board: GameBoard = [];
   for (let x = 0; x < width; x++) {
@@ -19,7 +19,7 @@ export function initBoard(width: number, height: number, maxMines: number) {
 
   // add mines randomly and update neighbours bomb count
   let plantedMines = 0;
-  while (plantedMines < maxMines) {
+  while (plantedMines < maximumMines) {
     const [x, y] = getRandomCoordinates(width, height);
     if (!board[x][y].isMine) {
       board[x][y].isMine = true;
@@ -33,32 +33,6 @@ export function initBoard(width: number, height: number, maxMines: number) {
   }
 
   return board;
-}
-
-export function handleCellClickHelper(board: GameBoard, width: number, height: number, x: number, y: number, isFlaggingAction: boolean): [GameStatus, GameBoard] {
-  const newBoard = [...board];
-  const cell = newBoard[x][y];
-  if (isFlaggingAction) {
-    // toggle flag when right-clicking
-    cell.isFlagged = !cell.isFlagged;
-  } else {
-    // clicking on a flagged cell does nothing
-    if (cell.isFlagged) {
-      // todo: fix this
-      return [GameStatus.ongoing, newBoard];
-    }
-
-    if (cell.isMine) {
-      revealAllMines(board);
-      return [GameStatus.lost, newBoard];
-    }
-
-    if (!cell.isDiscovered) {
-      revealEmptySpace(board, width, height, x, y);
-    }
-  }
-
-  return [GameStatus.ongoing, newBoard];
 }
 
 export function revealEmptySpace(

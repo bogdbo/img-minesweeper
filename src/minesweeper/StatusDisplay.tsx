@@ -1,7 +1,11 @@
+import { useSelector } from 'react-redux';
 import styled from "styled-components";
+import { RootStore } from '../rootStore';
 import { GameStatus } from "./types";
 
-export function StatusDisplay({ status }: { status: GameStatus }) {
+export function StatusDisplay() {
+  const status = useSelector((state: RootStore) => state.minesweeper.status);
+
   let icon = null;
   let message = null;
   switch (status) {

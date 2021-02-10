@@ -1,12 +1,16 @@
+import { Provider } from 'react-redux';
 import React from "react";
 import styled from "styled-components";
 import { Minesweeper } from "./minesweeper";
+import { rootStore } from './rootStore';
 
 function App() {
   return (
-    <AppHost>
-      <Minesweeper />
-    </AppHost>
+    <Provider store={rootStore}>
+      <AppHost>
+        <Minesweeper />
+      </AppHost>
+    </Provider>
   );
 }
 
