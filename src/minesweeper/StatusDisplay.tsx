@@ -1,10 +1,13 @@
-import { useSelector } from 'react-redux';
+import { useSelector } from "react-redux";
 import styled from "styled-components";
-import { RootStore } from '../rootStore';
+import { RootStore } from "../rootStore";
 import { GameStatus } from "./types";
 
 export function StatusDisplay() {
   const status = useSelector((state: RootStore) => state.minesweeper.status);
+  const isMousePressed = useSelector(
+    (state: RootStore) => state.minesweeper.isMousePressed
+  );
 
   let icon = null;
   let message = null;
@@ -14,7 +17,7 @@ export function StatusDisplay() {
       message = `You've won!`;
       break;
     case GameStatus.lost:
-      icon = "😿";
+      icon = "😵";
       message = `You've lost.`;
       break;
     case GameStatus.notStarted:
@@ -22,8 +25,8 @@ export function StatusDisplay() {
       message = `👈️ Press start`;
       break;
     case GameStatus.ongoing:
-      icon = "🔍️";
-      message = `Digging`;
+      icon = isMousePressed ? "😲" : "😐️️";
+      message = null;
   }
 
   return (
@@ -35,14 +38,13 @@ export function StatusDisplay() {
 }
 
 export const GameStatusDisplayHost = styled.div`
-  margin: 0 50px;
   display: flex;
   align-items: center;
   flex-direction: column;
-  font-size: 40px;
-  flex: 0 0 250px;
+  font-size: 25px;
+  flex: 0 0 150px;
 `;
 
 export const Message = styled.span`
-  font-size: 30px;
+  font-size: 15px;
 `;

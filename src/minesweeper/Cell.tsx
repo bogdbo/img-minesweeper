@@ -1,9 +1,9 @@
 import { MouseEventHandler, useCallback } from "react";
-import { useDispatch, useSelector } from 'react-redux';
+import { useDispatch, useSelector } from "react-redux";
 import styled from "styled-components";
-import { RootStore } from '../rootStore';
-import { getCellHoverStyle, getCellTextColor } from './utilities';
-import { clickCell } from "./slice";
+import { RootStore } from "../rootStore";
+import { getCellHoverStyle, getCellTextColor } from "./utilities";
+import { clickCell, mouseEvent } from "./slice";
 
 export interface MinesweeperCellProps {
   x: number;
@@ -31,7 +31,7 @@ export function MinesweeperCell({ x, y }: MinesweeperCellProps) {
       e.preventDefault();
       // any button other than normal click will flag the cell
       const isFlagging = e.button !== 0;
-      dispatch(clickCell({ isFlag: isFlagging, x, y }))
+      dispatch(clickCell({ isFlag: isFlagging, x, y }));
     },
     [dispatch]
   );
@@ -41,6 +41,12 @@ export function MinesweeperCell({ x, y }: MinesweeperCellProps) {
       isDiscovered={cell.isDiscovered}
       isMine={cell.isMine}
       neighbouringBombsCount={cell.neighbouringBombsCount}
+      onMouseDown={(e) =>
+        dispatch(mouseEvent({ isMousePressed: e.button === 0 }))
+      }
+      onMouseUp={() => dispatch(mouseEvent({ isMousePressed: false }))}
+      // todo: mouseUp not triggered if mouse is not on the element
+      onMouseOut={() => dispatch(mouseEvent({ isMousePressed: false }))}
       onClick={handleClick}
       onContextMenu={handleClick}
     >

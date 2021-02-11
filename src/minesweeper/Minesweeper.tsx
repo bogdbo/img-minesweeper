@@ -1,19 +1,20 @@
-import { useMemo } from "react";
-import { useSelector } from 'react-redux';
+import React, { useMemo } from "react";
+import { useSelector } from "react-redux";
 import styled from "styled-components";
-import { RootStore } from '../rootStore';
+import { RootStore } from "../rootStore";
 import { Settings } from "./Settings";
 import { StatusDisplay } from "./StatusDisplay";
 import { MinesweeperCell } from "./Cell";
 
 export function Minesweeper() {
-  const { board, width, height } = useSelector((state: RootStore) => state.minesweeper);
+  const { board, width, height } = useSelector(
+    (state: RootStore) => state.minesweeper
+  );
+
   const cellComponents = useMemo(
     () =>
       board.flatMap((row, x) =>
-        row.map((cell, y) => (
-          <MinesweeperCell x={x} y={y} key={`${x}-${y}`} />
-        ))
+        row.map((cell, y) => <MinesweeperCell x={x} y={y} key={`${x}-${y}`} />)
       ),
     [board]
   );
@@ -50,4 +51,5 @@ const Board = styled.div<{ height: number; width: number }>`
   grid-template-columns: repeat(${(p) => p.height}, min-content);
   grid-gap: 2px;
   user-select: none;
+  justify-content: center;
 `;

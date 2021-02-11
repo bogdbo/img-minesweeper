@@ -1,17 +1,23 @@
-import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { GameStatus, InitBoardPayload } from './types';
-import { initBoard, revealAllMines, revealEmptySpace } from './utilities';
-import { ClickCellPayload, GameState } from './types';
+import { createSlice, PayloadAction } from "@reduxjs/toolkit";
+import { GameStatus, InitBoardPayload } from "./types";
+import {
+  getGameStatus,
+  initBoard,
+  revealAllMines,
+  revealEmptySpace,
+} from "./utilities";
+import { ClickCellPayload, GameState } from "./types";
 
 const initialState: GameState = {
   board: [],
   width: -1,
   height: -1,
-  status: GameStatus.notStarted
-}
+  status: GameStatus.notStarted,
+  isMousePressed: false,
+};
 
 const minesweeperSlice = createSlice({
-  name: 'minesweeper',
+  name: "minesweeper",
   initialState,
   reducers: {
     startGame(state, action: PayloadAction<InitBoardPayload>) {
@@ -21,7 +27,10 @@ const minesweeperSlice = createSlice({
       state.board = initBoard(action.payload);
       return state;
     },
-    clickCell(state, { payload: { x, y, isFlag } }: PayloadAction<ClickCellPayload>) {
+    clickCell(
+      state,
+      { payload: { x, y, isFlag } }: PayloadAction<ClickCellPayload>
+    ) {
       if (state.status !== GameStatus.ongoing) {
         return state;
       }
@@ -30,6 +39,7 @@ const minesweeperSlice = createSlice({
       if (isFlag) {
         // toggle flag when right-clicking
         cell.isFlagged = !cell.isFlagged;
+        state.status = getGameStatus(state.board);
       } else {
         // clicking on a flagged cell does nothing
         if (cell.isFlagged) {
@@ -39,6 +49,7 @@ const minesweeperSlice = createSlice({
         if (cell.isMine) {
           revealAllMines(state.board);
           state.status = GameStatus.lost;
+          return state;
         }
 
         if (!cell.isDiscovered) {
@@ -47,10 +58,13 @@ const minesweeperSlice = createSlice({
       }
 
       return state;
-    }
-  }
+    },
+    mouseEvent(state, action: PayloadAction<{ isMousePressed: boolean }>) {
+      state.isMousePressed = action.payload.isMousePressed;
+      return state;
+    },
+  },
 });
 
-export const { startGame, clickCell } = minesweeperSlice.actions;
+export const { startGame, clickCell, mouseEvent } = minesweeperSlice.actions;
 export default minesweeperSlice.reducer;
-

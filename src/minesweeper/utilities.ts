@@ -1,8 +1,9 @@
-import { GameBoard, InitBoardPayload } from './types';
+import { GameBoard, GameStatus, InitBoardPayload } from "./types";
 
-export function initBoard({ width, height, maximumMines } : InitBoardPayload) {
+export function initBoard({ width, height, maximumMines }: InitBoardPayload) {
   // create empty board
   const board: GameBoard = [];
+
   for (let x = 0; x < width; x++) {
     board.push([]);
     for (let y = 0; y < height; y++) {
@@ -11,24 +12,25 @@ export function initBoard({ width, height, maximumMines } : InitBoardPayload) {
         isMine: false,
         isFlagged: false,
         neighbouringBombsCount: 0,
-        x,
-        y,
       };
     }
   }
 
-  // add mines randomly and update neighbours bomb count
+  // add mines randomly
   let plantedMines = 0;
-  while (plantedMines < maximumMines) {
+  const totalCellCount = width * height;
+  while (plantedMines < maximumMines && plantedMines < totalCellCount) {
     const [x, y] = getRandomCoordinates(width, height);
     if (!board[x][y].isMine) {
       board[x][y].isMine = true;
+      plantedMines++;
+
+      // update neighbouring cells bomb count
       const neighbourCoordinates = getNeighbourCoordinates(width, height, x, y);
       for (const [nx, ny] of neighbourCoordinates) {
         const neighbour = board[nx][ny];
         neighbour.neighbouringBombsCount++;
       }
-      plantedMines++;
     }
   }
 
@@ -50,33 +52,64 @@ export function revealEmptySpace(
   clickedCell.isDiscovered = true;
 
   // stop discovering if cell is a 'number' or a mine
-  if (clickedCell.neighbouringBombsCount > 0 || clickedCell.isMine) {
+  if (
+    clickedCell.neighbouringBombsCount > 0 ||
+    clickedCell.isMine ||
+    clickedCell.isFlagged
+  ) {
     return;
   }
 
   const neighbourCoordinates = getNeighbourCoordinates(width, height, x, y);
   for (const [nx, ny] of neighbourCoordinates) {
     const neighbour = board[nx][ny];
-    if (!neighbour.isMine) {
+    if (!neighbour.isMine && !neighbour.isFlagged) {
       revealEmptySpace(board, width, height, nx, ny);
     }
   }
 }
 
 export function revealAllMines(board: GameBoard) {
-  for (let i = 0; i < board.length; i++) {
-    for (let j = 0; j < board[i].length; j++) {
-      const cell = board[i][j];
+  board.forEach((row) =>
+    row.forEach((cell) => {
       if (cell.isMine) {
         cell.isDiscovered = true;
       }
+    })
+  );
+
+  return board;
+}
+
+export function getGameStatus(board: GameBoard): GameStatus {
+  const boardStats = board.flat().reduce(
+    (result: any, cell) => {
+      result.flaggedMines += Number(
+        cell.isMine && cell.isFlagged && !cell.isDiscovered
+      );
+      result.undiscoveredCells += Number(!cell.isDiscovered);
+      return result;
+    },
+    {
+      flaggedMines: 0,
+      undiscoveredCells: 0,
     }
+  );
+
+  if (boardStats.discoveredMines > 0) {
+    return GameStatus.lost;
   }
+
+  if (boardStats.flaggedMines == boardStats.undiscoveredCells) {
+    return GameStatus.won;
+  }
+
+  return GameStatus.ongoing;
 }
 
 // random number between [0, max)
 function getRandomNumber(max: number) {
-  return Math.floor(Math.random() * max);
+  return Math.max(0, Math.floor(Math.random() * max));
 }
 
 // generates random X coordinate within [0, width) and random Y coordinate within [0, height)

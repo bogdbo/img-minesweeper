@@ -1,8 +1,6 @@
 export interface Cell {
   isDiscovered: boolean;
   isMine: boolean;
-  x: number;
-  y: number;
   isFlagged: boolean;
   neighbouringBombsCount: number;
 }
@@ -21,6 +19,7 @@ export interface GameState {
   width: number;
   height: number;
   status: GameStatus;
+  isMousePressed: boolean;
 }
 
 export interface ClickCellPayload {
@@ -30,7 +29,7 @@ export interface ClickCellPayload {
 }
 
 export interface InitBoardPayload {
-  width: number,
-  height: number,
-  maximumMines: number
+  width: number;
+  height: number;
+  maximumMines: number;
 }
