@@ -64,7 +64,6 @@ const MinesweeperCellHost = styled.div<{
   font-size: 25px;
   font-weight: bold;
   width: 30px;
-  box-shadow: 1px 1px black;
   height: 30px;
   background-color: ${({ isDiscovered, isMine }) =>
     isDiscovered ? (isMine ? "red" : "#EFEFEF") : "#ABABAB"};
@@ -74,7 +73,12 @@ const MinesweeperCellHost = styled.div<{
   cursor: pointer;
   color: ${({ neighbouringBombsCount }) =>
     getCellTextColor(neighbouringBombsCount)};
-  border: 1px solid #ababab;
+  border-width: 2px;
+  border-style: solid;
+  border-top-color: #DEDEDE;
+  border-left-color: #DEDEDE;
+  border-bottom-color: #656565;
+  border-right-color: #656565;
 
   ${({ isDiscovered }) => getCellHoverStyle(isDiscovered)}
 

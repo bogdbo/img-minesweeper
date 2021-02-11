@@ -49,7 +49,6 @@ const Board = styled.div<{ height: number; width: number }>`
   display: grid;
   grid-template-rows: repeat(${(p) => p.width}, min-content);
   grid-template-columns: repeat(${(p) => p.height}, min-content);
-  grid-gap: 2px;
   user-select: none;
   justify-content: center;
 `;
