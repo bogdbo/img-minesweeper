@@ -1,6 +1,10 @@
 import { GameBoard, GameStatus, InitBoardPayload } from "./types";
 
 export function initBoard({ width, height, maximumMines }: InitBoardPayload) {
+  if (width <= 0 || height <= 0 || maximumMines < 0) {
+    throw new Error("invalid dimension or number of mines");
+  }
+
   // create empty board
   const board: GameBoard = [];
 

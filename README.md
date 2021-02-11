@@ -10,7 +10,7 @@ Some notes on things that can be improved and other considerations:
   - some things, like styled components that have conditions inside them I would test with snapshots
   - since there's no master-class that tracks the state of the game, testing is a bit easier (less setup)
   - mocking state with redux is also very straight forward for components
-  - would use react-testing-library  
+  - would use react-testing-library
 - Opted for `redux-toolkit` because it allows me to stick to a more functional approach but also because I wanted to give it a shot
   - it uses ImmerJS so changes to the state would automatically generate safe copies (and it's less overhead than ImmutableJS or my initial basic approach of destructuring and reassigning `[...board]`, plus it comes included with the 'toolkit')
   - typescript support is very very good for how dynamic it is

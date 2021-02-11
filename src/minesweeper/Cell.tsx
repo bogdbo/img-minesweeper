@@ -75,8 +75,8 @@ const MinesweeperCellHost = styled.div<{
     getCellTextColor(neighbouringBombsCount)};
   border-width: 2px;
   border-style: solid;
-  border-top-color: #DEDEDE;
-  border-left-color: #DEDEDE;
+  border-top-color: #dedede;
+  border-left-color: #dedede;
   border-bottom-color: #656565;
   border-right-color: #656565;
 
