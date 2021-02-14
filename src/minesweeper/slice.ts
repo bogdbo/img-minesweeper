@@ -54,6 +54,7 @@ const minesweeperSlice = createSlice({
 
         if (!cell.isDiscovered) {
           revealEmptySpace(state.board, state.width, state.height, x, y);
+          state.status = getGameStatus(state.board);
         }
       }
 
